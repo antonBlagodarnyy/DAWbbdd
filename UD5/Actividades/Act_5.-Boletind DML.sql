@@ -1,0 +1,121 @@
+SELECT * FROM EMPLE;
+
+--1)
+--1.1)Damos de alta a la siguiente profesora con los apellidos y nombre
+--‘Quiroga Martín. A.’, especialidad ‘INFORMÁTICA’, y código de centro 46.
+SELECT * FROM PROFESORES;
+
+INSERT INTO PROFESORES (apellidos, especialidad, cod_centro)
+VALUES ('Quiroga Martín. A.','INFORMÁTICA','46');
+
+--2)Disponemos de la tabla EMPLE30, cuya descripción es la misma que la de
+--la tabla EMPLE. Inserta los datos de los empleados del departamento 30. 
+SELECT * FROM EMPLE;
+CREATE TABLE EMPLE30 AS
+SELECT * FROM EMPLE;
+SELECT * FROM EMPLE30;
+
+INSERT INTO EMPLE30
+SELECT * FROM (SELECT * FROM EMPLE WHERE dept_no=30);
+
+--3)
+--3.1)
+SELECT * FROM NOMBRES;
+SELECT * FROM EMPLE;
+
+INSERT INTO NOMBRES(nombre)
+SELECT  APELLIDO  FROM EMPLE WHERE DEPT_NO=20;
+
+--4)
+INSERT INTO EMPLE (EMP_NO,apellido,oficio,dir,fecha_alt,salario
+,comision,dept_no)
+SELECT '1111','GARCIA','VENDEDOR',7839,SYSDATE,1300,400,10
+FROM (SELECT DEPT_NO
+FROM EMPLE
+GROUP BY DEPT_NO
+ORDER BY COUNT (*) DESC) WHERE ROWNUM<=1;
+
+--5)no la he sacao
+SELECT * FROM EMPLE;
+
+INSERT INTO EMPLE 
+SELECT '1112',
+'QUIROGA',
+(SELECT oficio FROM EMPLE WHERE apellido = 'GIL'),
+(SELECT dir FROM EMPLE WHERE apellido = 'GIL'),
+SYSDATE,
+(SELECT salario FROM EMPLE WHERE apellido = 'GIL'),
+(SELECT comision FROM EMPLE WHERE apellido = 'GIL'),
+(SELECT dept_no FROM EMPLE WHERE apellido = 'GIL')
+FROM EMPLE;
+
+--6)
+SELECT * FROM CENTROS;
+
+UPDATE CENTROS
+SET direccion = 'C/Pilon 23', num_plazas = 295
+WHERE COD_CENTRO = 22; 
+
+--7)
+SELECT * FROM CENTROS;
+
+UPDATE CENTROS
+SET (tipo_centro,nombre,direccion,telefono,num_plazas) = (SELECT tipo_centro,nombre,direccion,telefono,num_plazas FROM CENTROS WHERE cod_centro=50)
+WHERE cod_centro = 10;
+
+--7.1)
+SELECT * FROM EMPLE;
+SELECT * FROM DEPART;
+
+UPDATE EMPLE 
+SET SALARIO = SALARIO/ 2,
+COMISION = 0
+WHERE DEPT_NO=(
+SELECT DEPT_NO
+FROM (SELECT DEPT_NO FROM EMPLE GROUP BY DEPT_NO ORDER BY COUNT (*) DESC)
+WHERE ROWNUM = 1);
+
+--7.2)
+SELECT * FROM EMPLE;
+SELECT * FROM DEPART;
+
+UPDATE EMPLE 
+SET SALARIO = 
+(SELECT salario*2 FROM EMPLE WHERE apellido='SANCHEZ'),
+apellido = LOWER (apellido)
+WHERE DEPT_NO=(
+SELECT DEPT_NO
+FROM DEPART
+WHERE DNOMBRE='CONTABILIDAD');
+
+--8)
+SELECT * FROM CENTROS;
+
+DELETE FROM CENTROS
+WHERE cod_centro = 50;
+
+--8.1)
+DELETE FROM CENTROS;
+
+--8.2)
+SELECT * FROM LIBRERIA;
+
+DELETE FROM LIBRERIA
+WHERE EJEMPLARES <=(SELECT  AVG(EJEMPLARES) FROM LIBRERIA);
+
+--8.3)
+SELECT * FROM DEPART;
+SELECT * FROM EMPLE;
+
+--De angy:
+DELETE FROM DEPART WHERE DEPT_NO IN
+(SELECT DEPT_NO FROM EMPLE GROUP BY DEPT_NO HAVING COUNT(*) <4;
+
+DELETE FROM DEPART
+WHERE (SELECT COUNT(*) AS numero_empleados
+FROM EMPLE) <4;
+
+SELECT COUNT(*) AS numero_empleados
+FROM EMPLE ;
+SELECT COUNT(*) AS numero_empleados
+FROM depart ;

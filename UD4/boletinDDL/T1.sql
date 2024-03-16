@@ -1,0 +1,71 @@
+CREATE TABLE LIBRO (
+codigo Varchar(8) NOT NULL,
+autor VARCHAR(8) NOT NULL,
+titulo VARCHAR(8) NOT NULL,
+editor VARCHAR(8) NOT NULL,
+clase VARCHAR(8) NOT NULL,
+prestado INT DEFAULT 1 NOT NULL
+)
+
+
+CREATE TABLE USUARIO (
+secuencia Varchar(8) NOT NULL,
+nombre VARCHAR(8) NOT NULL, 
+direccion VARCHAR(8) NOT NULL,
+fecha_ingreso DATE NOT NULL
+)
+
+CREATE TABLE CLASE (
+clase Varchar(8) NOT NULL,
+tiempo_de_prestamo NUMBER (4,2) NOT NULL
+)
+
+CREATE TABLE PRESTAMO (
+codigo Varchar(8) NOT NULL,
+secuencia VARCHAR(8),
+fecha_inicio DATE NOT NULL
+)
+
+ALTER TABLE LIBRO ADD CONSTRAINT pk_libro
+PRIMARY KEY(codigo);
+
+ALTER TABLE USUARIO ADD CONSTRAINT pk_usuario
+PRIMARY KEY(secuencia);
+
+ALTER TABLE CLASE ADD CONSTRAINT pk_clase
+PRIMARY KEY(clase);
+
+ALTER TABLE PRESTAMO ADD CONSTRAINT pk_prestamo
+PRIMARY KEY(codigo);
+
+ALTER TABLE LIBRO 
+ADD CONSTRAINT fk_libro_clase
+FOREIGN KEY (clase)
+REFERENCES CLASE(clase);
+
+ALTER TABLE PRESTAMO 
+ADD CONSTRAINT fk_prestamo_libro
+FOREIGN KEY (codigo)
+REFERENCES LIBRO(codigo);
+
+ALTER TABLE PRESTAMO 
+ADD CONSTRAINT fk_prestamo_usuario
+FOREIGN KEY (secuencia)
+REFERENCES USUARIO(secuencia);
+
+ALTER TABLE PRESTAMO
+MODIFY codigo DEFAULT 1;
+
+ALTER TABLE PRESTAMO
+MODIFY fecha_ingreso NOT NULL;
+
+ALTER TABLE USUARIO
+ADD (sexo VARCHAR(1) );
+
+ALTER TABLE LIBRO
+ADD (indice INT) ;
+------------------------------------
+------------------------------------
+ALTER TABLE CLASE
+MODIFY tiempo_de_prestamo number(4,2);
+

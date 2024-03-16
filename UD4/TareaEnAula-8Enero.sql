@@ -1,0 +1,42 @@
+CREATE  TABLE COCHES(
+
+mat VARCHAR(8) PRIMARY KEY,
+--añadir los nombres de los primary key a mano--
+marca VARCHAR(15) NOT NULL,
+an_fab NUMBER(2) NOT NULL);
+
+CREATE  TABLE MECANICOS(
+
+dni VARCHAR(9) PRIMARY KEY,
+nombre VARCHAR(15) NOT NULL,
+puesto VARCHAR(15) NOT NULL,
+parcial  VARCHAR(1) NOT NULL);
+
+CREATE  TABLE TRABAJOS(
+
+dni VARCHAR(9),
+FOREIGN KEY (dni) REFERENCES MECANICOS (dni),
+mat VARCHAR(8),
+FOREIGN KEY (mat) REFERENCES COCHES (mat),
+
+horas NUMBER(4,1) CHECK (horas > 0.5),
+fecha DATE NOT NULL);
+
+--------------------------------
+
+ALTER TABLE COCHES 
+ADD modelo VARCHAR (15);
+
+ALTER TABLE TRABAJOS 
+ADD CONSTRAINT pk_trabajos PRIMARY KEY (mat,dni);
+
+ALTER TABLE TRABAJOS 
+ADD CONSTRAINT fk_mat_trabajos
+FOREIGN KEY (mat)
+REFERENCES COCHES(mat)
+ADD CONSTRAINT fk_dni_trabajos
+FOREIGN KEY (dni)
+REFERENCES MECANICOS(dni);
+
+ALTER TABLE COCHES
+MODIFY an_fab NUMBER(4);

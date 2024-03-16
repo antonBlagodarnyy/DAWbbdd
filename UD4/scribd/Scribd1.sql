@@ -1,0 +1,169 @@
+--CREACION TABLAS
+CREATE TABLE NACIONALIDADES(
+id_nac NUMBER CONSTRAINT pk_nacionalidades PRIMARY KEY,
+nom_nac VARCHAR2(15));
+
+CREATE TABLE TENISTAS (
+id_ten NUMBER CONSTRAINT pk_tenistas PRIMARY KEY,
+nom_ten VARCHAR2(20),
+ape_ten VARCHAR2(20),
+eda_ten NUMBER (3),
+id_nac NUMBER,--fk nacionalidades
+id_tip NUMBER);--fk tipos
+
+CREATE TABLE TIPOS (
+id_tip NUMBER CONSTRAINT pk_tipos PRIMARY KEY,
+nom_tip VARCHAR2 (15));
+
+CREATE TABLE NUB(
+id_nub NUMBER CONSTRAINT pk_nub PRIMARY KEY,
+id_ten NUMBER,--fk tenista
+id_tro NUMBER,--fk trofeos
+can_tro NUMBER (3));
+
+CREATE TABLE TROFEOS (
+id_tro NUMBER CONSTRAINT pk_trofeos PRIMARY KEY,
+nom_tro VARCHAR2 (30));
+
+--FK--
+ALTER TABLE TENISTAS
+ADD CONSTRAINT fk_tenistas_nacionalidades
+FOREIGN KEY (id_nac) REFERENCES NACIONALIDADES (id_nac);
+ALTER TABLE TENISTAS
+ADD CONSTRAINT fk_tenistas_tipos
+FOREIGN KEY (id_tip) REFERENCES TIPOS (id_tip);
+
+ALTER TABLE NUB
+ADD CONSTRAINT fk_nub_tenistas
+FOREIGN KEY (id_ten) REFERENCES TENISTAS (id_ten);
+ALTER TABLE NUB
+ADD CONSTRAINT fk_tenistas_trofeos
+FOREIGN KEY (id_tro) REFERENCES TROFEOS (id_tro);
+
+--INSERCION DE DATOS
+INSERT INTO NACIONALIDADES (id_nac, nom_nac)
+VALUES (1,'RUSA');
+INSERT INTO NACIONALIDADES (id_nac, nom_nac)
+VALUES (2,'SUIZA');
+INSERT INTO NACIONALIDADES (id_nac, nom_nac)
+VALUES (3,'ESPAÑOLA');
+
+INSERT INTO TIPOS (id_tip,nom_tip)
+VALUES (1,'DIESTRO');
+INSERT INTO TIPOS (id_tip,nom_tip)
+VALUES (2,'ZURDO');
+
+INSERT INTO TENISTAS (id_ten, nom_ten, ape_ten, eda_ten, id_nac, id_tip)
+VALUES (1,'ROGER','FEDERER',35,2,1);
+INSERT INTO TENISTAS (id_ten, nom_ten, ape_ten, eda_ten, id_nac, id_tip)
+VALUES (2,'MARIA','SHARAPOBA',31,1,2);
+INSERT INTO TENISTAS (id_ten, nom_ten, ape_ten, eda_ten, id_nac, id_tip)
+VALUES (3,'RAFAEL','NADAL',30,3,2);
+
+INSERT INTO TROFEOS (id_tro, nom_tro)
+VALUES (1,'WIMBLEDON');
+INSERT INTO TROFEOS (id_tro, nom_tro)
+VALUES (2,'ROKAND GARROS');
+INSERT INTO TROFEOS (id_tro, nom_tro)
+VALUES (3,'OPEN DE AUSTRALIA');
+INSERT INTO TROFEOS (id_tro, nom_tro)
+VALUES (4,'US OPEN');
+INSERT INTO TROFEOS (id_tro, nom_tro)
+VALUES (5,'MASTERS');
+
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (1,1,3,4);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (2,1,2,1);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (3,1,1,7);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (4,1,5,6);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (5,2,1,1);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (6,2,2,2);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (7,2,3,1);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (8,2,4,1);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (9,2,5,1);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (10,3,4,2);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (11,3,2,9);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (12,3,3,1);
+INSERT INTO NUB (id_nub, id_ten,id_tro,can_tro)
+VALUES (13,3,1,2);
+
+--COMPRUEBA INSERCIONES
+SELECT* FROM NACIONALIDADES;
+
+SELECT* FROM TENISTAS;
+
+SELECT* FROM TIPOS;
+
+SELECT* FROM NUB;
+
+SELECT* FROM TROFEOS;
+
+--AÑADIR COLUMNAS A TENISTAS
+ALTER TABLE TENISTAS
+ADD ran_ten NUMBER;
+ALTER TABLE TENISTAS
+ADD est_ten VARCHAR(40);
+
+DESCRIBE TENISTAS;
+
+--QUITAR COLUMNA ESTADO
+ALTER TABLE TENISTAS
+DROP COLUMN est_ten;
+
+DESCRIBE TENISTAS;
+
+--MODIFICAR RANKING
+ALTER TABLE TENISTAS
+MODIFY ran_ten NUMBER(3);
+
+--AGREGAR SEXOS
+CREATE TABLE SEXOS(
+id_sex NUMBER CONSTRAINT pk_sex PRIMARY KEY,
+nom_sex VARCHAR2(10));
+
+ALTER TABLE TENISTAS
+ADD id_sex NUMBER;
+ALTER TABLE TENISTAS
+ADD CONSTRAINT fk_tenistas_sexo FOREIGN KEY (id_sex) REFERENCES SEXOS(id_sex);
+
+--INSERT SEXOS
+INSERT INTO SEXOS(id_sex,nom_sex)
+VALUES(1,'MASCULINO');
+INSERT INTO SEXOS(id_sex,nom_sex)
+VALUES(2,'FEMENINO');
+
+--INSERT DATOS FALTANTES
+UPDATE TENISTAS
+SET ran_ten=1, id_sex=1
+WHERE id_ten=1;
+
+UPDATE TENISTAS
+SET ran_ten=2, id_sex=2
+WHERE id_ten=2;
+
+UPDATE TENISTAS
+SET ran_ten=3, id_sex=1
+WHERE id_ten=3;
+
+--COMPROBAMOS DATOS
+SELECT*FROM TENISTAS;
+
+--ELIMINAMOS EL REGISTRO DE LOS TROFEOS DFE MARIA SHARAPOBA
+DELETE NUB
+WHERE id_ten=2;
+
+--VOLVEMOS 
+ROLLBACK;
+
+SELECT* FROM NUB;
