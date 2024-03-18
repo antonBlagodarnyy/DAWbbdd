@@ -50,27 +50,71 @@
 SELECT * FROM inscriptos;
 SELECT * FROM socios;
 
---4- Muestre el número de socio, el nombre del socio y el deporte en que está 
---inscripto con un join de ambas tablas
-SELECT i.numeroSocio, s.nombre, i.deporte FROM socios s
-JOIN INSCRIPTOS I
-ON S.NUMERO = I.NUMEROSOCIO;
 
---lo hice en clase bien, copiar y pegar de ahi
---5- Muestre los socios que se serán compañeros en tenis y también en natación (empleando subconsulta)
-select distinct numerosocio from inscriptos
-WHERE numerosocio IN (
-    SELECT numerosocio from inscriptos
-    WHERE deporte='tenis')
-    AND numerosocio IN (SELECT numerosocio from inscriptos
-    WHERE deporte='natacion');
+--4- Muestre el número de socio, el nombre del socio 
+--y el deporte en que está inscripto con un join de ambas tablas
+SELECT s.numero, s.nombre, i.deporte FROM socios S
+JOIN inscriptos I 
+ON I.numerosocio = S.numero;
 
---6- Vea si el socio 1 se ha inscripto en algún deporte en el cual se haya inscripto el socio 2
+--5- Muestre los socios que se serán compañeros en tenis 
+--y también en natación (empleando subconsulta)
+SELECT DISTINCT nombre FROM socios S
+JOIN inscriptos I 
+ON I.numerosocio = S.numero
+WHERE i.deporte = ANY 
+(SELECT deporte
+FROM inscriptos
+WHERE deporte = 'natacion' OR deporte = 'tenis');
 
+--6- Vea si el socio 1 se ha inscripto en algún deporte 
+--en el cual se haya inscripto el socio 2
+SELECT  deporte AS deportesRepe FROM inscriptos 
+WHERE numerosocio = 1 AND 
+deporte = ANY 
+(SELECT deporte FROM inscriptos 
+WHERE numerosocio=2);
 
---7- Realice la misma consulta anterior pero empleando "in" en lugar de "=any"
+--7- Realice la misma consulta anterior pero empleando "in" 
+--en lugar de "=any"
+SELECT  deporte AS deportesRepe FROM inscriptos 
+WHERE numerosocio = 1 AND 
+deporte IN 
+(SELECT deporte FROM inscriptos 
+WHERE numerosocio=2);
 
 --8- Obtenga el mismo resultado anterior pero empleando join
+SELECT  i.deporte AS deportesRepe FROM socios S
+JOIN inscriptos I 
+ON I.numerosocio = S.numero
+WHERE i.numerosocio = 1 
+
+AND i.deporte IN 
+(SELECT i.deporte FROM socios S
+JOIN inscriptos I 
+ON I.numerosocio = S.numero
+WHERE i.numerosocio=2);
+
+--solucion
+select i1.deporte
+  from inscriptos i1
+  join inscriptos i2
+  on i1.deporte=i2.deporte
+  where i1.numerosocio=1 and
+  i2.numerosocio=2;
+
+--9- Muestre los deportes en los cuales el socio 2 pagó más 
+--cuotas que ALGUN deporte en los que se inscribió el socio 1
+SELECT  
+i.deporte AS deportesRepe FROM socios S
+JOIN inscriptos I 
+ON I.numerosocio = S.numero
+WHERE i.numerosocio = 1 AND 
+i.deporte = ANY
+(SELECT i.deporte FROM socios S
+JOIN inscriptos I 
+ON I.numerosocio = S.numero
+WHERE i.numerosocio > );
 
 --9- Muestre los deportes en los cuales el socio 2 pagó más cuotas que ALGUN deporte en
 -- los que se inscribió el socio 1
