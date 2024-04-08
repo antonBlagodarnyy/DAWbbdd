@@ -1,0 +1,82 @@
+//Mostrar dbs
+show dbs
+
+//Cambiar a bd
+use [nombreBd]
+
+//Mostrar colecciones
+show collections
+
+//Mostrar contenido colleciones
+db.collectionName.find()
+
+//Tarea CRUD1
+db.collection.insertMany([
+    {
+        referencia: 'P0004',
+        tipo: 'zapatos',
+        talla: 'M',
+        precio: 45.99,
+        paraHombre: false
+    },
+    {
+        referencia: 'P0005',
+        tipo: 'falda',
+        paraMujer: true,
+        talla: 'S',
+        precio: 25.99
+    },
+    {
+        referencia: 'P0006',
+        tipo: 'falda',
+        paraMujer: true,
+        talla: 'S',
+        precio: 29.99
+    },
+    {
+        referencia: 'P0007',
+        tipo: 'jeans',
+        paraHombre: true,
+        talla: 'M',
+        precio: 39.99
+    }
+])
+
+db.collection.deleteOne({ referencia: 'P0001' });
+db.collection.deleteMany({ tipo: 'camisa' });
+db.collection.updateOne({ referencia: 'P0002' }, { $set: { precio: 35.99 } });
+db.collection.updateMany({ paraHombre: true }, { $set: { paraHombre: false } });
+db.collection.replaceOne({ referencia: 'P0003' }, { referencia: 'P0007', tipo: 'jeans', paraHombre: true, talla: 'M', precio: 39.99 });
+db.collection.updateMany({ tipo: 'camisa' }, { $set: { precio: 25.99 } });
+db.collection.deleteOne({ referencia: 'P0004' });
+db.collection.deleteMany({});
+db.collection.deleteOne({ referencia: 'P0005' });
+db.collection.updateOne({ referencia: 'P0006' }, { $set: { talla: 'M' } });
+db.collection.deleteMany({ precio: { $lte: 25.99 } });
+db.collection.updateOne({ referencia: 'P0002' }, { $set: { descuento: 5.00 } });
+db.collection.updateMany({ tipo: 'pantalon' }, { $set: { tipo: 'pantalón' } });
+
+//Muesta el contenido de todas las colecciones
+db.collection.find() 
+
+//Muesta el contenido de la coleccion camisetas
+db.camisetas.find()
+
+//Muestra las camisetas para hombre
+db.camisetas.find({paraHombre: true}) 
+
+//Muesta las camisetas para hombre con un precio mayor a 21
+db.camisetas.find({ paraHombre: true, precio: { $gt: 21 } }) 
+
+//Muestra camisetas con un precio entre 30 y 41
+db.camisetas.find( { precio: { $gt: 24 , $lt: 41} } ) 
+
+//Numero total de camisetas
+db.camisetas.count() 
+db.camisetas.find().count() 
+
+//Numero total de camisetas para hombre
+db.camisetas.find({ paraHombre: true }).count() 
+
+//Muestra las 2 primeras prendas
+db.camisetas.find().limit(2)
